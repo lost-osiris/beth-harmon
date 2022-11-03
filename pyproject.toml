@@ -1,0 +1,80 @@
+[tool.poetry]
+authors = [
+  "Mathew Owens <matt@mowens.io>",
+]
+description = "Beth Harmon Discord Bot"
+name = "beth"
+version = "1.0.0"
+
+[tool.poetry.dependencies]
+python = "^3.10.5"
+tenacity = "^7.0.0"
+"discord.py" = "^1.7.3"
+python-dotenv = "^0.21.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+flake8 = "^3.8.4"
+flake8-bandit = "^2.1.2"
+flake8-black = "^0.3.0"
+flake8-bugbear = "^20.1.4"
+flake8-isort = "^4.0.0"
+flakehell = "^0.7.0"
+isort = "^5.6.4"
+moto = "^1.3.16"
+poethepoet = "^0.9.0"
+pre-commit = "^2.8.2"
+pre-commit-hooks = "^3.3.0"
+
+[tool.black]
+line-length = 88
+
+[tool.flakehell]
+extended_default_ignore = []
+max_line_length = 88
+show_source = true # show line of source code in output
+
+[tool.flakehell.plugins]
+flake8-bandit = ["+*"]
+flake8-black = ["+*"]
+flake8-bugbear = ["+*"]
+flake8-isort = ["+*"]
+pycodestyle = [
+  "+*",
+  "-E501", # Replaced with fuzzy line max (B950) from bugbear
+  "-E203", # per flake8-black, until https://github.com/PyCQA/pycodestyle/issues/373 is resolved
+  "-E722", # Replaced with B001
+  "-W503", # Whitespace before binary operator OK
+]
+pyflakes = ["+*"]
+
+[tool.flakehell.exceptions."tests/"]
+# pytest uses assert
+flake8-bandit = ["-S101"]
+pycodestyle = ["-F401"]
+
+[tool.isort]
+line_length = 88
+profile = "black"
+sections = ['FUTURE', "STDLIB", "THIRDPARTY", "FULCRUMLABS", "FIRSTPARTY", "LOCALFOLDER"]
+src_paths = ["src"]
+
+[tool.pytest.ini_options]
+log_format = '[%(levelname)8s] %(name)s:%(lineno)d %(message)s'
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+# log_date_format = %Y-%m-%d %H:%M:%S
+filterwarnings = [
+  "ignore:the imp module is deprecated:DeprecationWarning",
+]
+log_level = "DEBUG"
+
+[tool.poe.tasks]
+lint = "flakehell lint"
+test = "pytest"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry_core>=1.0.0"]
+
+[tool.poetry.scripts]
+beth = 'beth.main:main'
