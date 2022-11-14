@@ -34,7 +34,6 @@ def find_command_args(ctx):
     has_quotes = False
     quote_count = 0
     quote_char = None
-    skip = False
 
     def next_arg():
         nonlocal key, value, key_done, has_quotes, quote_char, quote_count, parsed_args
@@ -54,31 +53,31 @@ def find_command_args(ctx):
 
 
     for idx, i in enumerate(msg):
-        if skip:
-            skip = False
+        if i == " " and not key_done:
             continue
-        
+
         if i == '"' or i == "'":
             quote_char = i
             has_quotes = True
             quote_count += 1
-        
-        if idx == len(msg) -  1 or (key_done and has_quotes and quote_count == 2) or (key_done and not has_quotes and i == " "):
+
+        if idx == len(msg) - 1 or (key_done and has_quotes and quote_count == 2) or (key_done and not has_quotes and i == " "):
+            if idx == len(msg) - 1:
+                value += i
+
             next_arg()
-            skip = True
-            continue
+        else:
+            if not key_done and i != "=" and not value:
+                key += i
 
-        if not key_done and i != "=" and not value:
-            key += i
+            elif i == "=":
+                key_done = True
 
-        elif i == "=":
-            key_done = True
+            elif key_done and not has_quotes and i != " ":
+                value += i
 
-        elif key_done and not has_quotes and i != " ":
-            value += i
-
-        elif key_done and has_quotes and i != quote_char:
-            value += i
+            elif key_done and has_quotes and i != quote_char:
+                value += i
         
 
     return parsed_args
