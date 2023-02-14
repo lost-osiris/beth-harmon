@@ -1,4 +1,4 @@
 #!/bin/bash
-beth 2>&1 log.txt &
+beth 2&> /dev/null &
 PID=$!
 echo $PID > pid.txt
