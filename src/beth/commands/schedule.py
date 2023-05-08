@@ -76,7 +76,7 @@ class ScheduleCog(commands.Cog):
     #     print(self.schedule_otb_meeting.next_iteration)
 
     @commands.command(name="sync")
-    @commands.has_any_role("staff")
+    @commands.has_any_role("Staff")
     @commands.check(cmd_is_bot_cmd_channel)
     async def sync(self, ctx) -> None:
         self.bot.tree.copy_global_to(guild=ctx.guild)
@@ -97,7 +97,7 @@ class ScheduleCog(commands.Cog):
             discord.app_commands.Choice(name="Next Week", value=False),
         ]
     )
-    @app_commands.checks.has_any_role("staff")
+    @app_commands.checks.has_any_role("Staff")
     @app_commands.check(cog_is_bot_cmd_channel)
     async def schedule(
         self,
